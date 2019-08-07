@@ -5,7 +5,10 @@
 define nagios::webadmin(
   $vhost,
   $htpasswd_file,
-  $ensure        = present,
+  $ensure             = present,
+  $cgi_dir            = $::nagios::cgi_dir,
+  $stylesheets_dir    = $::nagios::stylesheets_dir,
+  $physical_html_path = $::nagios::physical_html_path,
 ) {
 
   file {"/var/www/${vhost}/conf/nagios.conf":
@@ -16,9 +19,9 @@ define nagios::webadmin(
     content => epp(
       'nagios/apache.conf.epp',
       {
-        cgi_dir            => $::nagios_cgi_dir,
-        stylesheets_dir    => $::nagios_stylesheets_dir,
-        physical_html_path => $::nagios_physical_html_path,
+        cgi_dir            => $cgi_dir,
+        stylesheets_dir    => $stylesheets_dir,
+        physical_html_path => $physical_html_path,
         vhost              => $vhost,
         htpasswd_file      => $htpasswd_file,
       },
