@@ -13,7 +13,16 @@ define nagios::webadmin(
     owner   => root,
     group   => root,
     mode    => '0644',
-    content => template('nagios/apache.conf.erb'),
+    content => epp(
+      'nagios/apache.conf.epp',
+      {
+        cgi_dir            => $::nagios_cgi_dir,
+        stylesheets_dir    => $::nagios_stylesheets_dir,
+        physical_html_path => $::nagios_physical_html_path,
+        vhost              => $vhost,
+        htpasswd_file      => $htpasswd_file,
+      },
+    ),
     notify  => Exec['apache-graceful'],
   }
 

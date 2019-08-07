@@ -1,0 +1,25 @@
+<%- |
+  Stdlib::Absolutepath $cgi_dir,
+  Stdlib::Absolutepath $stylesheets_dir,
+  Stdlib::Absolutepath $physical_html_path,
+  String               $vhost,
+  String               $htpasswd_file,
+| -%>
+# file managed by puppet
+
+ScriptAlias /cgi-bin/nagios3     <%= $cgi_dir %>
+ScriptAlias /nagios3/cgi-bin     <%= $cgi_dir %>
+Alias       /nagios3/stylesheets <%= $stylesheets_dir %>
+Alias       /nagios3             <%= $physical_html_path %>
+
+<DirectoryMatch (<%= $physical_html_path %>|<%= $cgi_dir %>)>
+	Options FollowSymLinks
+	AllowOverride AuthConfig
+	Order Allow,Deny
+	Allow From All
+
+	AuthName "Nagios Access"
+	AuthType Basic
+	AuthUserFile /var/www/<%= $vhost %>/private/<%= $htpasswd_file %>
+	require valid-user
+</DirectoryMatch>
